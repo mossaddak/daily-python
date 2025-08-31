@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Notifications</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: #2579b7;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      background: #f1f1f1;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Notifications</h1>
+  <ul id="notifications"></ul>
+
+  <!-- Firebase v9+ SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+    import { getDatabase, ref, onChildAdded } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+
+    /*  
+        Your Firebase config
+        WARNING: Keep this settings to the .env file
+    */
+    const firebaseConfig = {
+      apiKey: "",
+      authDomain: "",
+      databaseURL: "",
+      projectId: "",
+      storageBucket: "",
+      messagingSenderId: "",
+      appId: "",
+      measurementId: ""
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Example userId
+    const userId = "16d8821b-17e0-477f-8cf9-09eeb0c76a11"; // or "admin"
+    const notificationsRef = ref(db, "notifications/" + userId);
+
+    // Listen for new notifications
+    onChildAdded(notificationsRef, (snapshot) => {
+      const data = snapshot.val();
+      console.log("New notification:", data);
+
+      const li = document.createElement("li");
+      li.textContent = `${data.title}`;
+      document.getElementById("notifications").appendChild(li);
+    });
+  </script>
+</body>
+</html>
